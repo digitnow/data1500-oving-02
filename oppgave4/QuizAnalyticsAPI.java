@@ -204,7 +204,7 @@ public class QuizAnalyticsAPI {
                     quizResults.removeIf(r -> r.studentId == studentId);
                     saveStudentsToCSV();
                     saveQuizResultsToCSV();
-                    sendResponse(exchange, 204, "");
+                    sendResponse(exchange, 204, ""); // generere advarsel siden 204 skal ikke ha respons
                 } else {
                     sendResponse(exchange, 404, "{\"error\":\"Student not found\"}");
                 }

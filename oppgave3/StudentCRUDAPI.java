@@ -134,8 +134,12 @@ public class StudentCRUDAPI {
     
     private static void handleStudentsRequest(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
-        
-        if ("GET".equals(method)) {
+
+        // Legg til CORS-headers
+        //addCORSHeaders(exchange);
+        if ("OPTIONS".equals(method)) {
+                sendResponse(exchange, 200, "");
+        } else if ("GET".equals(method)) {
             handleGetAllStudents(exchange);
         } else if ("POST".equals(method)) {
             handleCreateStudent(exchange);
@@ -146,6 +150,10 @@ public class StudentCRUDAPI {
     
     private static void handleStudentRequest(HttpExchange exchange) throws IOException {
         String method = exchange.getRequestMethod();
+
+        // Legg til CORS-headers
+        //addCORSHeaders(exchange);
+
         String path = exchange.getRequestURI().getPath();
         String[] parts = path.split("/");
         
@@ -157,7 +165,9 @@ public class StudentCRUDAPI {
         try {
             int studentId = Integer.parseInt(parts[3]);
             
-            if ("GET".equals(method)) {
+            if ("OPTIONS".equals(method)) {
+                sendResponse(exchange, 200, "");
+            } else if ("GET".equals(method)) {
                 handleGetStudent(exchange, studentId);
             } else if ("PUT".equals(method)) {
                 handleUpdateStudent(exchange, studentId);
@@ -171,6 +181,7 @@ public class StudentCRUDAPI {
         }
     }
     
+    // Henter ikke de nyeste data, hvis andre prosesser har oppdatert de på disken
     private static void handleGetAllStudents(HttpExchange exchange) throws IOException {
         StringBuilder json = new StringBuilder("[");
         boolean first = true;
@@ -277,8 +288,12 @@ public class StudentCRUDAPI {
     
     private static void sendResponse(HttpExchange exchange, int statusCode, String response) 
             throws IOException {
-        exchange.getResponseHeaders().set("Content-Type", "application/json");
+       
+        exchange.getResponseHeaders().set("Content-Type", "application/json; charset=utf-8");
         exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
+      
         
         byte[] responseBytes = response.getBytes();
         exchange.sendResponseHeaders(statusCode, responseBytes.length);
@@ -286,5 +301,11 @@ public class StudentCRUDAPI {
         OutputStream os = exchange.getResponseBody();
         os.write(responseBytes);
         os.close();
+    }
+
+    private static void addCORSHeaders(HttpExchange exchange) {
+        exchange.getResponseHeaders().set("Access-Control-Allow-Origin", "*");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
+        exchange.getResponseHeaders().set("Access-Control-Allow-Headers", "Content-Type");
     }
 }

@@ -57,7 +57,7 @@ public class UserSearchAPI {
         int port = Integer.parseInt(args[0]);
         csvFilePath = args[1];
         
-        // Last inn CSV-filen
+        // Last inn CSV-filen (fra disk til primært minne)
         loadUsersFromCSV(csvFilePath);
         
         // Opprett HTTP-server
@@ -165,7 +165,7 @@ public class UserSearchAPI {
         try {
             for (String param : query.split("&")) {
                 String[] kv = param.split("=");
-                if (kv[0].equals("email")) {
+                if (kv[0].equals("email")) { // input-validering
                     email = URLDecoder.decode(kv[1], "UTF-8");
                 }
             }

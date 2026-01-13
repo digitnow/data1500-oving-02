@@ -91,22 +91,22 @@ public class FileAccessAPI {
     private static void handleSearchRequest(HttpExchange exchange) throws IOException {
         String query = exchange.getRequestURI().getQuery();
         String searchQuery = getQueryParam(query, "query");
-        
+        System.out.println("searchQuery=" + searchQuery);
         if (searchQuery == null) {
             sendResponse(exchange, 400, "{\"error\":\"Missing query parameter\"}");
             return;
         }
         
-        // Last inn brukere (forenklet for demo)
+        // Last inn brukere (forenklet/hardkodet for demo)
         Path userPath = Paths.get(dataDirectory, "brukere.csv");
         List<String> lines = Files.readAllLines(userPath);
         List<String> results = new ArrayList<>();
         
         // SÅRBARHET: Simulert SQL Injection logikk
         // Hvis input inneholder "' OR '1'='1", returnerer vi alt.
-        boolean injectionSuccess = searchQuery.contains("' OR '1'");
-        //System.out.println("searchQuery=" + searchQuery);
-        //System.out.println("injectionSuccess=" + injectionSuccess);
+        boolean injectionSuccess = searchQuery.contains("' OR '1'='1");
+        
+        System.out.println("injectionSuccess=" + injectionSuccess);
         
         for (String line : lines) {
             if (line.trim().isEmpty()) continue;
@@ -138,7 +138,7 @@ public class FileAccessAPI {
     private static String getQueryParam(String query, String paramName) {
         if (query == null) return null;
         for (String param : query.split("&")) {
-            String[] kv = param.split("=");
+            String[] kv = param.split("=", 2);
             if (kv.length > 1 && kv[0].equals(paramName)) {
                 try {
                     return URLDecoder.decode(kv[1], "UTF-8");
