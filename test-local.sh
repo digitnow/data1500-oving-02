@@ -175,7 +175,8 @@ if [ -d "oppgave2" ]; then
         # Test 4: Simulert SQL Injection
         # Vi må URL-encode ' OR '1'='1 -> %27%20OR%20%271%27%3D%271
         run_test "GET /api/search (SQL Injection)" \
-            "curl -s \"http://localhost:9005/api/search?query=%27%20OR%20%271%27\" | grep -q 'bruker5'"
+            "curl -s \"http://localhost:9005/api/search?query=%27%20OR%20%271%27%3D%271\" | grep -q 'bruker5'"
+            ' OR '1'='1
         
         # Kill server
         kill $SERVER_PID 2>/dev/null

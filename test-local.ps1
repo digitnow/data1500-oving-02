@@ -203,7 +203,7 @@ if (Test-Path $Oppgave2NYDir) {
 
         # Test 4: Simulated SQL Injection
         Run-Test "GET /api/search (SQL Injection)" {
-            $response = curl.exe -s "http://localhost:9005/api/search?query=%27%20OR%20%271%27" 2>$null
+            $response = curl.exe -s "http://localhost:9005/api/search?query=%27%20OR%20%271%27%3D%271" 2>$null
             $response | Select-String "bruker5" -Quiet
         }
 
