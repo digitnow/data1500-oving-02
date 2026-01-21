@@ -1,4 +1,4 @@
-# ============================================================
+﻿# ============================================================
 # Test script for DATA1500 Øving 2 - Webapplikasjoner
 # PowerShell version for Windows
 #
